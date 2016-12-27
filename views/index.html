@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Super Media Collider Extranaganza for Reddit!</title>
+    <meta name="description" content="A cool thing made with Gomix">
+    <link id="favicon" rel="icon" href="https://gomix.com/favicon-app.ico" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <!-- component template -->
+    <script type="text/x-template" id="mood-template">
+      <section class="mood">
+        <header class="mood__header">
+          <h2>{{ title }}</h2>
+        </header>
+        <ul class="mood__options">
+          <li v-for="option in options">
+            <a v-bind:href="option.url">{{ option.title }}</a>
+          </li>
+        </ul>
+      </section>
+    </script>
+
+    <header>
+      <h1>Super Media Collider Extranaganza for Reddit!</h1>
+      <h2>Yet another Reddit player</h2>
+    </header>
+
+    <main>
+      <h1>What are you in the mood for?</h1>
+      
+      <div class="moods">
+        <mood
+          class="mood_video"
+          v-bind:data="video">
+        </mood>
+        <mood
+          class="mood_music"
+          v-bind:data="music">
+        </mood>
+      </div>
+    </main>
+
+    <footer>
+      <a href="https://gomix.com/#!/project/super-media-collider-extravaganza-for-reddit">
+        Remix this in Gomix
+      </a>
+    </footer>
+
+    <!-- Your web-app is https, so your scripts need to be too -->
+    <script src="https://unpkg.com/vue@2.1.7/dist/vue.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.1.min.js"
+            integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
+            crossorigin="anonymous"></script>
+    <script src="/index.js"></script>
+
+  </body>
+</html>

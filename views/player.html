@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Super Media Collider Extranaganza for Reddit!</title>
+    <meta name="description" content="A cool thing made with Gomix">
+    <link id="favicon" rel="icon" href="https://gomix.com/favicon-app.ico" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <!-- component template -->
+    <script type="text/x-template" id="player-template">
+      <section class="player">
+        <span class="player__loading-text" v-show="loading">...Loading</span>
+        <div 
+          class="embed-wrapper"
+          v-html="embedCode">
+        </div>
+      </section>
+    </script>
+    
+    <script type="text/x-template" id="playlist-template">
+      <section class="playlist">
+        <span class="playlist__loading-text" v-show="loading">...Loading</span>
+        <div 
+          class="upcoming-post"
+          v-bind:class="{ 'upcoming-post_active': upcomingPost.active }"
+          v-show="!loading"
+          v-for="upcomingPost in posts">
+          <span class="upcoming-post__title">{{ upcomingPost.data.title }}</span>
+          <img v-bind:src="upcomingPost.data.thumbnail | makeSSL" class="upcoming-post__thumbnail">
+        </div>
+      </section>
+    </script>
+    
+    <script type="text/x-template" id="meta-bar-template">
+      <section class="meta-bar">
+        <span class="meta-bar__title">{{ title }}</span>
+        <div class="meta-bar__controls">
+          <button 
+            class="control control_prev"
+            v-on:click="playPrev">
+            Previous
+          </button>
+          <button 
+            class="control control_play control_pause"
+            v-on:click="togglePlay">
+            Play/Pause
+          </button>
+          <button 
+            class="control control_next"
+            v-on:click="playNext">
+            Next
+          </button>
+        </div>
+      </section>    
+    </script>
+    
+    <header>
+      <h1><a href="/">Super Media Collider Extravaganza for Reddit!</a></h1>
+    </header>
+
+    <main>
+      <player
+        v-bind:post="postMeta.currentPost">
+      </player>
+      <meta-bar
+        v-bind:title="postMeta.currentPost.title"
+        v-on:play-prev="queuePrev"
+        v-on:toggle-play="queueToggle"
+        v-on:play-next="queueNext">
+      </meta-bar>
+      <playlist
+        v-bind:posts="posts">
+      </playlist>
+      <section class="comments">
+        <header><h2><a href="/">Discussion On Reddit</a></h2></header>
+        <div class="comments__threads">
+          <div class="comments-thread">
+            <div class="comment">
+              <div class="comment_author">/u/spez</div>
+              <div class="comment_text">Wow what a comment</div>
+            </div>
+          </div>
+        </div>
+        
+      </section>
+    </main>
+
+    <footer>
+      <a href="https://gomix.com/#!/project/super-media-collider-extravaganza-for-reddit">
+        Remix this in Gomix
+      </a>
+    </footer>
+
+    <!-- Your web-app is https, so your scripts need to be too -->
+    <script src="https://unpkg.com/vue@2.1.7/dist/vue.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.1.min.js"
+            integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
+            crossorigin="anonymous"></script>
+    <!-- So many player apis -->
+    <script src="https://www.youtube.com/iframe_api" async></script>
+    <script src="https://player.vimeo.com/api/player.js" async></script>
+    <script src="/player.js"></script>
+  </body>
+</html>

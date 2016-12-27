@@ -1,0 +1,26 @@
+{
+	"name": "super-media-collider-extravaganza-for-reddit",
+	"version": "0.0.1",
+	"description": "Yet another Reddit Player",
+	"private": true,
+	"main": "server.js",
+	"scripts": {
+		"start": "node server.js"
+	},
+	"dependencies": {
+		"express": "^4.14.0",
+		"node-sass-middleware": "^0.10.0"
+	},
+	"engines": {
+		"node": "6.9.1"
+	},
+	"repository": {
+		"url": "https://gomix.com/#!/project/welcome-project"
+	},
+	"keywords": [
+		"node",
+		"gomix",
+		"express"
+	],
+	"license": "MIT"
+}
