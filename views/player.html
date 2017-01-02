@@ -1,22 +1,32 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
     <title>Super Media Collider Extranaganza for Reddit!</title>
     <meta name="description" content="A cool thing made with Gomix">
     <link id="favicon" rel="icon" href="https://gomix.com/favicon-app.ico" type="image/x-icon">
-    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="style.css">
+    <link 
+      href="https://fonts.googleapis.com/css?family=Audiowide|Bungee|Bungee+Shade|Ewert|Monoton|Open+Sans|Shrikhand"
+      rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
   </head>
   <body>
-    <!-- component template -->
+    <!-- component templates -->
     <script type="text/x-template" id="player-template">
       <section class="player">
         <span class="player__loading-text" v-show="loading">...Loading</span>
-        <div 
-          class="embed-wrapper"
-          v-html="embedCode">
+        <component
+          v-bind:is="currentView"
+          v-bind:key="post.name"
+          v-bind:domain="mediaType"
+          v-bind:width="width"
+          v-bind:height="height"
+          v-bind:mediaUrl="post.url"
+          v-bind:backupEmbedHtml="embedCode"
+          v-on:media-finished="playNext">
+        </component>
         </div>
       </section>
     </script>
@@ -24,58 +34,97 @@
     <script type="text/x-template" id="playlist-template">
       <section class="playlist">
         <span class="playlist__loading-text" v-show="loading">...Loading</span>
-        <div 
-          class="upcoming-post"
-          v-bind:class="{ 'upcoming-post_active': upcomingPost.active }"
-          v-show="!loading"
-          v-for="upcomingPost in posts">
-          <span class="upcoming-post__title">{{ upcomingPost.data.title }}</span>
-          <img v-bind:src="upcomingPost.data.thumbnail | makeSSL" class="upcoming-post__thumbnail">
-        </div>
+        <ul class="upcoming-posts flex-container flex-dir-column">
+          <li 
+            class="upcoming-post row flex-child-auto"
+            v-bind:class="{ 'upcoming-post_active': upcomingPost.active }"
+            v-show="!loading"
+            v-for="upcomingPost in posts">
+            <div class="column">
+              <span class="upcoming-post__title">{{ upcomingPost.data.title }}</span>
+            </div>
+            <div class="column flex-child-shrink">
+              <img 
+                v-bind:src="upcomingPost.data.thumbnail | isThumbnail | makeSSL"
+                alt="Post Thumbnail"
+                class="upcoming-post__thumbnail">
+            </div>
+          </li>
+        </ul>
       </section>
     </script>
     
     <script type="text/x-template" id="meta-bar-template">
-      <section class="meta-bar">
-        <span class="meta-bar__title">{{ title }}</span>
-        <div class="meta-bar__controls">
-          <button 
-            class="control control_prev"
-            v-on:click="playPrev">
-            Previous
-          </button>
-          <button 
-            class="control control_play control_pause"
-            v-on:click="togglePlay">
-            Play/Pause
-          </button>
-          <button 
-            class="control control_next"
-            v-on:click="playNext">
-            Next
-          </button>
+      <section class="meta-bar row align-middle">
+        <div class="column">
+          <h2 class="meta-bar__title">{{ title }}</h3>
+        </div>
+        <div class="column shrink">
+          <div class="meta-bar__controls button-group">
+            <button
+              type="button"
+              class="control control_prev button"
+              v-on:click="playPrev">
+              Previous
+            </button>
+            <button 
+              type="button"
+              class="control control_play control_pause button"
+              v-on:click="togglePlay">
+              Play/Pause
+            </button>
+            <button 
+              type="button"
+              class="control control_next button"
+              v-on:click="playNext">
+              Next
+            </button>
+          </div>
         </div>
       </section>    
     </script>
     
+    <!-- Actual html stuff  -->
     <header>
-      <h1><a href="/">Super Media Collider Extravaganza for Reddit!</a></h1>
+      <transition
+        name="custom-classes-transition"
+        enter-active-class="animated tada"
+        leave-active-class="animated bounceOutRight">
+        <h1 v-if="show">
+          <a href="/">Super Media Collider Extravaganza for Reddit!</a>
+        </h1>
+      </transition>
+      <button
+        type="button"
+        class="button secondary small about-handle"
+        v-on:click="show = !show">
+        About
+      </button>
     </header>
 
-    <main>
-      <player
-        v-bind:post="postMeta.currentPost">
-      </player>
-      <meta-bar
-        v-bind:title="postMeta.currentPost.title"
-        v-on:play-prev="queuePrev"
-        v-on:toggle-play="queueToggle"
-        v-on:play-next="queueNext">
-      </meta-bar>
-      <playlist
-        v-bind:posts="posts">
-      </playlist>
-      <section class="comments">
+    <main id="#main">
+      <div class="row row_player expanded collapse large-unstack">
+        <div class="column column_player column_controls flex-container flex-dir-column">
+          <player
+            class="flex-child-grow"
+            v-bind:post="postMeta.currentPost">
+          </player>
+          <meta-bar
+            class="flex-child-shrink"
+            v-bind:title="postMeta.currentPost.title"
+            v-on:play-prev="queuePrev"
+            v-on:toggle-play="queueToggle"
+            v-on:play-next="queueNext">
+          </meta-bar>
+        </div>
+       
+        <div class="column shrink">
+          <playlist
+            v-bind:posts="posts">
+          </playlist>
+        </div>
+      </div>
+      <section class="comments row flex-dir-column">
         <header><h2><a href="/">Discussion On Reddit</a></h2></header>
         <div class="comments__threads">
           <div class="comments-thread">
@@ -85,14 +134,21 @@
             </div>
           </div>
         </div>
-        
       </section>
     </main>
 
     <footer>
-      <a href="https://gomix.com/#!/project/super-media-collider-extravaganza-for-reddit">
-        Remix this in Gomix
-      </a>
+      <ul class="menu">
+        <li>
+          <a href="https://gomix.com/#!/project/super-media-collider-extravaganza-for-reddit">
+            Remix this in Gomix
+          </a>
+        </li>
+        <li>
+          <a>About?</a>
+        </li>
+      </ul>
+      
     </footer>
 
     <!-- Your web-app is https, so your scripts need to be too -->

@@ -7,16 +7,17 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Audiowide|Bungee|Bungee+Shade|Ewert|Monoton|Open+Sans|Shrikhand" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
   </head>
-  <body>
-    <!-- component template -->
+  <body class="page page_landing">
+    <!-- component templates -->
     <script type="text/x-template" id="mood-template">
-      <section class="mood">
-        <header class="mood__header">
-          <h2>{{ title }}</h2>
+      <section class="mood card">
+        <header class="mood__header card-divider">
+          <h3>{{ title }}</h3>
         </header>
-        <ul class="mood__options">
+        <ul class="mood__options card-section menu vertical">
           <li v-for="option in options">
             <a v-bind:href="option.url">{{ option.title }}</a>
           </li>
@@ -25,22 +26,26 @@
     </script>
 
     <header>
-      <h1>Super Media Collider Extranaganza for Reddit!</h1>
+      <h1>Super Media Collider Extranaganza for Reddit!<sup><a href="#footnote" title="I'm working on the name okay">*</a></sup></h1>
       <h2>Yet another Reddit player</h2>
     </header>
 
     <main>
       <h1>What are you in the mood for?</h1>
       
-      <div class="moods">
-        <mood
-          class="mood_video"
-          v-bind:data="video">
-        </mood>
-        <mood
-          class="mood_music"
-          v-bind:data="music">
-        </mood>
+      <div class="moods row small-unstack">
+        <div class="columns">
+          <mood
+            class="mood_video"
+            v-bind:data="video">
+          </mood>
+        </div>
+        <div class="columns">
+          <mood
+            class="mood_music"
+            v-bind:data="music">
+          </mood>
+        </div>
       </div>
     </main>
 

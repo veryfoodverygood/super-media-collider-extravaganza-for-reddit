@@ -1,0 +1,111 @@
+body {
+  // ========================================================
+  // This pattern is downloaded from www.subtlepatterns.com 
+  // If you need more, that's where to get'em.
+  // ========================================================
+  background-image: url('https://cdn.gomix.com/630c7520-5581-4686-ba26-06f0aa5f7e5f/geometry2.png');
+}
+
+.page {
+  
+  &_landing {
+    
+    header {
+      text-align: center;
+      
+      h1 {
+        font-family: $brand-font-family;
+      }
+    }
+  }
+}
+
+header {
+  text-align: center;
+  
+  .about-handle {
+    position: absolute;
+    transform: rotate(90deg);
+    transform-origin: 0% 50%;
+    top: -1rem;
+    right: -1rem;
+    margin: 0;
+  }
+}
+
+.row_player {
+  
+  @include breakpoint(large) {
+    height: 100vh;  
+    
+    // reaffirm shrink class (bugs amiright?)
+    .column.shrink {
+      @include flex-grid-column(shrink);
+      
+    }
+  }
+  
+  // also reaffirm collapse class
+  &.collapse {
+    
+    .column.shrink {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+}
+
+.player {
+  background: $primary-color;
+  color: $white;
+}
+
+.column_player {
+  
+  @include breakpoint(large down) {
+    height: 100vh;
+  }
+}
+
+.meta-bar {
+  background: $secondary-color;
+  color: $white;
+  
+  &__title {
+    font-size: $global-font-size * 1.2;
+    margin-bottom: 0;
+  }
+  
+  &__controls {
+    margin-bottom: 0;
+  }
+}
+
+.playlist {
+  background-color: $body-background;
+  height: 100%;
+  overflow-y: scroll;
+  width: 30rem;
+}
+
+.upcoming-posts {
+  margin: 0;  
+}
+
+.upcoming-post {
+  padding: $global-padding;
+  
+  & + & {
+    border-top: 1px solid $medium-gray;
+  }
+  
+  &_active {
+    background: $light-gray;
+  }
+}
+
+footer {
+  border-top: 1px solid $light-gray;
+  margin: $global-margin;
+  padding: $global-padding / 2;
+}

@@ -1,15 +1,31 @@
-// server.js
-// where your node app starts
-
 // init project
 var express = require('express');
 var app = express();
 var sassMiddleware = require('node-sass-middleware');
+var postcssMiddleware = require('postcss-middleware');
+var autoprefixer = require('autoprefixer');
+var path = require('path');
+var src = __dirname + '/public';
+var dest = '/tmp';
 
 app.use(sassMiddleware({
-  src: __dirname + '/public',
-  dest: '/tmp'
+  src: src,
+  dest: dest,
+  response: false
 }));
+
+app.use(postcssMiddleware({
+  plugins: [
+    /* Plugins */
+    autoprefixer({
+      /* Options */
+    })
+  ],
+  src: function(request) {
+    return path.join(dest, request.url);
+  }
+}));
+
 
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static('public'));

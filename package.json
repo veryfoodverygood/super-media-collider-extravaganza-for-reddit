@@ -1,6 +1,6 @@
 {
 	"name": "super-media-collider-extravaganza-for-reddit",
-	"version": "0.0.1",
+	"version": "0.0.5",
 	"description": "Yet another Reddit Player",
 	"private": true,
 	"main": "server.js",
@@ -9,7 +9,13 @@
 	},
 	"dependencies": {
 		"express": "^4.14.0",
-		"node-sass-middleware": "^0.10.0"
+		"node-sass-middleware": "^0.10.0",
+		"foundation-sites": "^6.3.0",
+		"path": "^0.12.7",
+		"postcss-middleware": "^1.1.2",
+		"autoprefixer": "^6.6.0",
+		"motion-ui": "^1.2.2",
+		"animate.css": "^3.5.2"
 	},
 	"engines": {
 		"node": "6.9.1"
