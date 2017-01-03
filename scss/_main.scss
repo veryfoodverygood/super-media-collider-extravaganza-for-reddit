@@ -17,6 +17,10 @@ body {
         font-family: $brand-font-family;
       }
     }
+    
+    h1 {
+      text-align: center;
+    }
   }
 }
 
@@ -30,6 +34,7 @@ header {
     top: -1rem;
     right: -1rem;
     margin: 0;
+    z-index: 40;
   }
 }
 
@@ -65,9 +70,19 @@ header {
 }
 
 .column_player {
+  z-index: 20;
   
   @include breakpoint(large down) {
     height: 100vh;
+  }
+}
+
+.column_playlist {
+  z-index: 10;
+  
+  &:hover,
+  &.column_active {
+    z-index: 30;
   }
 }
 
@@ -95,11 +110,27 @@ header {
   background-color: $body-background;
   height: 100%;
   overflow-y: scroll;
-  width: 30rem;
+  
+  @include breakpoint(large) {
+    position: relative;
+    overflow: visible;
+    // width: 30rem; // original size
+    width: 11.5rem;
+  }
 }
 
 .upcoming-posts {
-  margin: 0;  
+  margin: 0;
+  
+  @include breakpoint(large) {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 30rem;
+    overflow-y: scroll;
+    background: $body-background;
+  }
 }
 
 .upcoming-post {

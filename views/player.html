@@ -37,7 +37,7 @@
     <script type="text/x-template" id="playlist-template">
       <section class="playlist">
         <span class="playlist__loading-text" v-show="loading">...Loading</span>
-        <ul class="upcoming-posts flex-container flex-dir-column">
+        <ul class="upcoming-posts">
           <upcoming-post
             v-for="(upcomingPost, index) in posts"
             v-bind:active="upcomingPost.active"
@@ -51,7 +51,7 @@
     
     <script type="text/x-template" id="upcoming-post-template">
       <li 
-        class="upcoming-post flex-container flex-child-auto"
+        class="upcoming-post flex-container"
         v-bind:class="{ 'upcoming-post_active': active }">
         <div class="column">
           <span class="upcoming-post__title">{{ title }}</span>
@@ -139,7 +139,7 @@
     <!-- Actual html stuff  -->
     <header>
       <transition
-        name="custom-classes-transition"
+        name="silly-transition"
         enter-active-class="animated tada"
         leave-active-class="animated bounceOutRight">
         <h1 v-if="show">
@@ -177,7 +177,7 @@
           </meta-bar>
         </div>
        
-        <div class="column shrink">
+        <div class="column column_playlist shrink">
           <playlist
             v-bind:posts="posts"
             v-on:load-post="loadPostFromEvent">
