@@ -5,6 +5,12 @@
 var app = {
   config: {
     nsfwThumbnailUrl: 'https://cdn.gomix.com/630c7520-5581-4686-ba26-06f0aa5f7e5f%2Fnsfw-icon.png'
+  },
+  mediaStatus: {
+    playing: 'playing',
+    stopped: 'stopped',
+    loading: 'loading',
+    error: 'error'
   }
 }
 
@@ -27,20 +33,38 @@ Vue.component('playlist', {
     }
   },
   
-  filters: {
-    isThumbnail: function(url) {
-      // Cheat by just checking common cases I guess?
-      switch (url) {
-        case 'nsfw':
-          return app.config.nsfwThumbnailUrl;
-        
-        default:
-          return url;
+  methods: {
+    emitLoadPost: function(index) {
+      this.$emit('load-post', this.posts[index]);
+    }
+  },
+  
+  components: {
+    'upcoming-post': {
+      template: '#upcoming-post-template',
+      
+      props: {
+        active: Boolean,
+        title: String,
+        thumbnail: String
+      },
+
+      filters: {
+        isThumbnail: function(url) {
+          // Cheat by just checking common cases I guess?
+          switch (url) {
+            case 'nsfw':
+              return app.config.nsfwThumbnailUrl;
+            
+            default:
+              return url;
+          }
+        },
+        // because the reddit api is derped
+        makeSSL: function(url) {
+          return url.replace('http://', 'https://');
+        }
       }
-    },
-    // because the reddit api is derped
-    makeSSL: function(url) {
-      return url.replace('http://', 'https://');
     }
   }
 });
@@ -71,8 +95,8 @@ Vue.component('player', {
     },
 
     mediaType: function() {
-      if (this.post.name == null ||
-          this.post.name == null
+      if (this.post.media == null ||
+          this.post.media == null
       ) {
         return '';
       } else {
@@ -81,8 +105,8 @@ Vue.component('player', {
     },
     
     embedCode: function() {
-      if (this.post.name == null ||
-          this.post.name == null
+      if (this.post.media == null ||
+          this.post.media == null
       ) {
         return '';
       } else {
@@ -91,8 +115,8 @@ Vue.component('player', {
     },
     
     currentView: function() {
-      if (this.post.name == null ||
-          this.post.name == null
+      if (this.post.media == null ||
+          this.post.media == null
       ) {
         return 'no-media';
       } else {
@@ -132,6 +156,7 @@ Vue.component('player', {
         width: Number,
         height: Number,
         mediaUrl: String,
+        playerStatus: String,
         backupEmbedHtml: String
       },
       
@@ -139,6 +164,24 @@ Vue.component('player', {
         return {
           playerApi: null
         };
+      },
+      
+      watch: {
+        playerStatus: function(newValue) {
+          console.log('player status change is now ' + newValue);
+          if (this.playerApi == null) {
+            return;
+          }
+          
+          switch (newValue) {
+            case app.mediaStatus.playing:
+              this.startPlayer();
+              break;
+            case app.mediaStatus.stopped:
+              this.pausePlayer();
+              break;
+          }
+        }
       },
       
       mounted: function() {
@@ -177,13 +220,33 @@ Vue.component('player', {
               // break;
           }
         },
+        pausePlayer: function() {
+          switch (this.domain) {
+            case 'youtube.com':
+              this.playerApi.pauseVideo();
+              break;
+            // case 'vimeo.com':
+              // do a vimeo thing
+              // break;
+          }
+        },
+        startPlayer: function() {
+          switch (this.domain) {
+            case 'youtube.com':
+              this.playerApi.playVideo();
+              break;
+            // case 'vimeo.com':
+              // do a vimeo thing
+              // break;
+          }
+        },
         youtubeInit: function() {
           this.playerApi = new YT.Player(this.$refs.embedPlaceholder, {
             height: this.height,
             width: this.width,
             videoId: this.getYoutubeId(this.mediaUrl),
             playerVars: {
-              origin: window.location.href, // why is this needed how is this not always implied??!,
+              autoplay: (this.playerStatus === 'playing') ? 1 : 0
               // controls: 0,
             },
             events: {
@@ -202,13 +265,19 @@ Vue.component('player', {
           console.log('Uh oh');
         },
         onYoutubeReady: function(event) {
-          event.target.playVideo();
+          // event.target.playVideo();
         },
         onYoutubeStateChange: function(event) {
           switch (event.data) {
             case YT.PlayerState.ENDED:
               console.log('done I guess?');
               this.$emit('media-finished');
+              break;
+            case YT.PlayerState.PLAYING:
+              this.$emit('media-started');
+              break;
+            case YT.PlayerState.PAUSED:
+              this.$emit('media-stopped');
               break;
           }
         }
@@ -230,12 +299,24 @@ Vue.component('meta-bar', {
   template: '#meta-bar-template',
   
   props: {
-    title: String
+    title: String,
+    threadPermalink: String,
+    mediaStatus: String,
   },
   
   computed: {
     loading: function() {
       return false;
+    },
+    toggleLabel: function() {
+      switch (this.mediaStatus) {
+        case app.mediaStatus.playing:
+          return 'Pause';
+        case app.mediaStatus.stopped:
+          return 'Play';
+        default:
+          return 'Play/Pause';
+      }
     }
   },
   
@@ -249,6 +330,38 @@ Vue.component('meta-bar', {
     playNext: function() {
       this.$emit('play-next');
     }
+  }
+});
+Vue.component('comments', {
+  template: '#comments-template',
+  
+  props: {
+    threadPermalink: String,
+    comments: Array
+  },
+});
+Vue.component('comment', {
+  template: '#comment-template',
+  
+  props: {
+    comment: Object,
+  },
+  
+  computed: {
+    author: function() {
+      return this.comment.author;
+    },
+    body: function() {
+      return this.comment.body_html;
+    },
+    children: function() {
+      if (this.comment.replies === '' ||
+          this.comment.replies == null
+      ) {
+        return false;
+      }
+      return this.comment.replies.data.children
+    },
   }
 });
 
@@ -265,15 +378,24 @@ var vm = new Vue({
   
   data: {
     endpointBase: 'https://www.reddit.com/r/{subreddit}/hot.json?raw_json=1',
+    commentsEndpointBase: 'https://www.reddit.com/comments/{article}.json?raw_json=1',
+    redditUrlBase: 'https://www.reddit.com',
     posts: null,
+    comments: null,
     linkPostType: 't3',
+    commentPostType: 't1',
     postMeta: {
       after: null,
       count: 0,
       currentPost: {
         name: null,
-        title: 'No Post Loaded'
+        title: 'No Post Loaded',
+        mediaStatus: app.mediaStatus.loading,
+        permalink: '/#'
       }
+    },
+    defaultPostData: {
+      mediaStatus: app.mediaStatus.playing
     }
   },
   
@@ -285,6 +407,9 @@ var vm = new Vue({
     },
     endpoint: function() {
       return this.endpointBase.replace('{subreddit}', this.subreddit);
+    },
+    commentsEndpoint: function() {
+      return this.commentsEndpointBase.replace('{article}', this.postMeta.currentPost.id);
     }
   },
   
@@ -313,7 +438,8 @@ var vm = new Vue({
         // we only like links here
         // And no self posts please
         if (post.kind !== self.linkPostType ||
-            post.data.is_self
+            post.data.is_self ||
+            post.data.media == null
         ) {
           delete posts[index];
         } else {
@@ -336,19 +462,40 @@ var vm = new Vue({
     },
     // Take currently active post and copy all info into current post object
     loadPost: function(postToLoad) {
-      var self = this;
+      var newPost;
       
       if (postToLoad != null) {
+        // turn off current active
+        var oldPostIndex = this.posts.findIndex(function(post, index, posts) {
+          return post.active;
+        }, this);
+        this.posts[oldPostIndex].active = false;
+        
+        // turn on new active
+        var newPostIndex = this.posts.findIndex(function(post, index, posts) {
+            return post === this;
+          },
+          postToLoad // a bit weird but meh?
+        );
+        this.posts[newPostIndex].active = true;
+        
+        postToLoad.data = Object.assign({}, this.defaultPostData, postToLoad.data);
         this.postMeta.currentPost = postToLoad.data;
-        return true;
+      } else {
+        newPost = this.posts.find(function(post) {
+          if (post.active) {
+            return true;
+          }
+        }, this);
+        
+        newPost.data = Object.assign({}, this.defaultPostData, newPost.data);
+        this.postMeta.currentPost = newPost.data;
       }
-          
-      this.posts.some(function(post, index, posts) {
-        if (post.active) {
-          this.postMeta.currentPost = post.data;
-          return true;
-        }
-      }, self);
+      
+      this.fetchComments();
+    },
+    loadPostFromEvent: function(postToLoad) {
+      this.loadPost(postToLoad);
     },
     // Find previous element in list based on id I guess?
     queuePrev: function() {
@@ -366,16 +513,20 @@ var vm = new Vue({
       }
       
       if (this.posts[currentIndex - 1] != null) {
-        // Should this happen here? meh
-        this.posts[currentIndex].active = false;
-        this.posts[currentIndex - 1].active = true;
         this.loadPost(this.posts[currentIndex - 1]);
       } else {
         console.log('wat do?');
       }
     },
     queueToggle: function() {
-      // TODO
+      switch (this.postMeta.currentPost.mediaStatus) {
+        case app.mediaStatus.playing:
+          this.postMeta.currentPost.mediaStatus = app.mediaStatus.stopped;
+          break;
+        
+        default:
+          this.postMeta.currentPost.mediaStatus = app.mediaStatus.playing;
+      }
     },
     queueNext: function() {
       var self = this,
@@ -392,13 +543,46 @@ var vm = new Vue({
       }
       
       if (this.posts[currentIndex + 1] != null) {
-        // Should this happen here? meh
-        this.posts[currentIndex].active = false;
-        this.posts[currentIndex + 1].active = true;
         this.loadPost(this.posts[currentIndex + 1]);
       } else {
         console.log('wat do?');
       }
+    },
+    updateStatePlaying: function() {
+      this.postMeta.currentPost.mediaStatus = app.mediaStatus.playing;
+    },
+    updateStatePaused: function() {
+      this.postMeta.currentPost.mediaStatus = app.mediaStatus.stopped;
+    },
+    fetchComments: function() {
+      var xhr = new XMLHttpRequest();
+      var self = this;
+      
+      xhr.open('GET', this.commentsEndpoint);
+      xhr.onload = function () {
+        var response = JSON.parse(xhr.responseText)[1].data;
+        self.prepareComments(response);
+      };
+      xhr.send();
+    },
+    prepareComments: function(data) {
+      var self = this;
+
+      data.children.forEach(function(post, index, posts) {
+        if (post.kind !== self.commentPostType ||
+            post.data == null
+        ) {
+          delete posts[index];
+        }
+      });
+      
+      // clean up array
+      data.children = data.children.filter(function(element) {
+        return element;
+      });
+      
+      // setup meta stuff
+      this.comments = data.children;
     }
   }
 });

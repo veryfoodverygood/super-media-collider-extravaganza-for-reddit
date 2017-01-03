@@ -24,8 +24,11 @@
           v-bind:width="width"
           v-bind:height="height"
           v-bind:mediaUrl="post.url"
+          v-bind:playerStatus="post.mediaStatus"
           v-bind:backupEmbedHtml="embedCode"
-          v-on:media-finished="playNext">
+          v-on:media-finished="playNext"
+          v-on:media-started="$emit('media-started')"
+          v-on:media-stopped="$emit('media-stopped')">
         </component>
         </div>
       </section>
@@ -35,29 +38,43 @@
       <section class="playlist">
         <span class="playlist__loading-text" v-show="loading">...Loading</span>
         <ul class="upcoming-posts flex-container flex-dir-column">
-          <li 
-            class="upcoming-post row flex-child-auto"
-            v-bind:class="{ 'upcoming-post_active': upcomingPost.active }"
-            v-show="!loading"
-            v-for="upcomingPost in posts">
-            <div class="column">
-              <span class="upcoming-post__title">{{ upcomingPost.data.title }}</span>
-            </div>
-            <div class="column flex-child-shrink">
-              <img 
-                v-bind:src="upcomingPost.data.thumbnail | isThumbnail | makeSSL"
-                alt="Post Thumbnail"
-                class="upcoming-post__thumbnail">
-            </div>
-          </li>
+          <upcoming-post
+            v-for="(upcomingPost, index) in posts"
+            v-bind:active="upcomingPost.active"
+            v-bind:title="upcomingPost.data.title"
+            v-bind:thumbnail="upcomingPost.data.thumbnail"
+            v-on:click.native="emitLoadPost(index)">
+          </upcoming-post>
         </ul>
       </section>
     </script>
     
-    <script type="text/x-template" id="meta-bar-template">
-      <section class="meta-bar row align-middle">
+    <script type="text/x-template" id="upcoming-post-template">
+      <li 
+        class="upcoming-post flex-container flex-child-auto"
+        v-bind:class="{ 'upcoming-post_active': active }">
         <div class="column">
-          <h2 class="meta-bar__title">{{ title }}</h3>
+          <span class="upcoming-post__title">{{ title }}</span>
+        </div>
+        <div class="column flex-child-shrink">
+          <img 
+            v-bind:src="thumbnail | isThumbnail | makeSSL"
+            alt="Post Thumbnail"
+            class="upcoming-post__thumbnail">
+        </div>
+      </li>
+    </script>
+  
+    <script type="text/x-template" id="meta-bar-template">
+      <section class="meta-bar flex-container align-middle">
+        <div class="column">
+          <h2 class="meta-bar__title">
+            <a 
+              target="_blank"
+              v-bind:href="threadPermalink">
+              {{ title }}
+            </a>
+          </h2>
         </div>
         <div class="column shrink">
           <div class="meta-bar__controls button-group">
@@ -71,7 +88,7 @@
               type="button"
               class="control control_play control_pause button"
               v-on:click="togglePlay">
-              Play/Pause
+              {{ toggleLabel }}
             </button>
             <button 
               type="button"
@@ -82,6 +99,41 @@
           </div>
         </div>
       </section>    
+    </script>
+
+    <script type="text/x-template" id="comments-template">
+      <section class="comments row flex-dir-column">
+        <header>
+          <h2>
+            <a 
+              v-bind:href="threadPermalink">
+              Discussion On Reddit
+            </a>
+          </h2>
+        </header>
+        <div class="comments__threads comment-threads">
+          <comment
+            v-for="comment in comments"
+            v-bind:comment="comment.data">
+          </comment>
+        </div>
+      </section>
+    </script>
+    
+    <script type="text/x-template" id="comment-template">
+      <div
+        class="comment"
+        v-if="body">
+        <div class="comment__author">{{ author }}</div>
+        <div class="comment__text" v-html="body"></div>
+        <div class="sub-comments">
+          <comment
+            v-if="children != null"
+            v-for="child in children"
+            v-bind:comment="child.data">
+          </comment>
+        </div>
+      </div>
     </script>
     
     <!-- Actual html stuff  -->
@@ -98,7 +150,7 @@
         type="button"
         class="button secondary small about-handle"
         v-on:click="show = !show">
-        About
+        {{ show ? 'Close' : 'About' }}
       </button>
     </header>
 
@@ -107,11 +159,18 @@
         <div class="column column_player column_controls flex-container flex-dir-column">
           <player
             class="flex-child-grow"
-            v-bind:post="postMeta.currentPost">
+            v-bind:post="postMeta.currentPost"
+            v-on:play-prev="queuePrev"
+            v-on:toggle-play="queueToggle"
+            v-on:play-next="queueNext"
+            v-on:media-started="updateStatePlaying"
+            v-on:media-stopped="updateStatePaused">
           </player>
           <meta-bar
-            class="flex-child-shrink"
+            class="flex-child-shrink align-self-stretch"
             v-bind:title="postMeta.currentPost.title"
+            v-bind:thread-permalink="'https://www.reddit.com' + postMeta.currentPost.permalink"
+            v-bind:media-status="postMeta.currentPost.mediaStatus"
             v-on:play-prev="queuePrev"
             v-on:toggle-play="queueToggle"
             v-on:play-next="queueNext">
@@ -120,21 +179,15 @@
        
         <div class="column shrink">
           <playlist
-            v-bind:posts="posts">
+            v-bind:posts="posts"
+            v-on:load-post="loadPostFromEvent">
           </playlist>
         </div>
       </div>
-      <section class="comments row flex-dir-column">
-        <header><h2><a href="/">Discussion On Reddit</a></h2></header>
-        <div class="comments__threads">
-          <div class="comments-thread">
-            <div class="comment">
-              <div class="comment_author">/u/spez</div>
-              <div class="comment_text">Wow what a comment</div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <comments
+        v-bind:thread-permalink="redditUrlBase + postMeta.currentPost.permalink"
+        v-bind:comments="comments">
+      </comments>
     </main>
 
     <footer>
@@ -144,14 +197,10 @@
             Remix this in Gomix
           </a>
         </li>
-        <li>
-          <a>About?</a>
-        </li>
       </ul>
-      
     </footer>
 
-    <!-- Your web-app is https, so your scripts need to be too -->
+    <!-- https only plz -->
     <script src="https://unpkg.com/vue@2.1.7/dist/vue.js"></script>
     <script src="https://code.jquery.com/jquery-2.2.1.min.js"
             integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="

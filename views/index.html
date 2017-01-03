@@ -7,7 +7,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css?family=Audiowide|Bungee|Bungee+Shade|Ewert|Monoton|Open+Sans|Shrikhand" rel="stylesheet">
+    <link 
+      href="https://fonts.googleapis.com/css?family=Audiowide|Bungee|Bungee+Shade|Ewert|Monoton|Open+Sans|Shrikhand" 
+      rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
   </head>
   <body class="page page_landing">
@@ -33,17 +35,13 @@
     <main>
       <h1>What are you in the mood for?</h1>
       
-      <div class="moods row small-unstack">
-        <div class="columns">
+      <div class="moods row small-unstack" >
+        <div 
+          class="column"
+          v-for="mood in moods">
           <mood
-            class="mood_video"
-            v-bind:data="video">
-          </mood>
-        </div>
-        <div class="columns">
-          <mood
-            class="mood_music"
-            v-bind:data="music">
+            v-bind:class="'mood_' + mood.name"
+            v-bind:data="mood">
           </mood>
         </div>
       </div>

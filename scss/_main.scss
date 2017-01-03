@@ -58,6 +58,10 @@ header {
 .player {
   background: $primary-color;
   color: $white;
+  
+  .embed-placeholder {
+    display: block;
+  }
 }
 
 .column_player {
@@ -70,10 +74,16 @@ header {
 .meta-bar {
   background: $secondary-color;
   color: $white;
+  // flex-basis: 4rem;
   
   &__title {
     font-size: $global-font-size * 1.2;
     margin-bottom: 0;
+    
+    &,
+    a {
+      color: $white;
+    }
   }
   
   &__controls {
@@ -93,7 +103,12 @@ header {
 }
 
 .upcoming-post {
-  padding: $global-padding;
+  cursor: pointer;
+  padding: $global-padding 0;
+  
+  &:hover {
+    background: $medium-gray;
+  }
   
   & + & {
     border-top: 1px solid $medium-gray;
@@ -101,6 +116,32 @@ header {
   
   &_active {
     background: $light-gray;
+  }
+}
+
+.comments {
+  margin-top: $global-margin * 1.5;
+}
+
+.comment {
+  border: 2px solid $light-gray;
+  padding: $global-padding / 2;
+  margin-top: $global-margin;
+  
+  & + & {
+  }
+  
+  &__author {
+    font-style: italic;
+  }
+  
+  &__text {
+    
+    .md {
+      > :last-child {
+        margin-bottom: 0;
+      }
+    }
   }
 }
 
