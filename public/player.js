@@ -426,6 +426,27 @@ var vm = new Vue({
   created: function () {
     this.fetchData();
   },
+  
+  mounted: function() {
+    var self = this;
+    
+    window.addEventListener('keydown', function(event) {
+      var key = event.which || event.keyCode;
+      
+      switch (key) {
+        case 37: // left
+          self.queuePrev();
+          break;
+        case 32: // space
+          event.preventDefault();
+          self.queueToggle();
+          break;
+        case 39: // right
+          self.queueNext();
+          break;
+      }
+    });
+  },
 
   methods: {
     fetchData: function() {
