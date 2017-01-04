@@ -122,6 +122,7 @@ Vue.component('player', {
       } else {
         switch (this.post.media.type) {
           case 'youtube.com':
+          case 'youtube.com':
           // case 'vimeo.com':
             return 'api-embed';
           
@@ -377,10 +378,10 @@ var vm = new Vue({
   el: 'main',
   
   data: {
-    endpointBase: 'https://www.reddit.com/r/{subreddit}/hot.json?raw_json=1',
+    endpointBase: 'https://www.reddit.com/r/{subreddit}/hot.json?raw_json=1{params}',
     commentsEndpointBase: 'https://www.reddit.com/comments/{article}.json?raw_json=1',
     redditUrlBase: 'https://www.reddit.com',
-    posts: null,
+    posts: [],
     comments: null,
     linkPostType: 't3',
     commentPostType: 't1',
@@ -406,7 +407,16 @@ var vm = new Vue({
       return searchResult[1];
     },
     endpoint: function() {
-      return this.endpointBase.replace('{subreddit}', this.subreddit);
+      var params = '';
+      if (this.postMeta.count) {
+        params += '&count=' + this.postMeta.count;
+      }
+      if (this.postMeta.after != null) {
+        params += '&after=' + this.postMeta.after;
+      }
+      return this.endpointBase
+        .replace('{subreddit}', this.subreddit)
+        .replace('{params}', params);
     },
     commentsEndpoint: function() {
       return this.commentsEndpointBase.replace('{article}', this.postMeta.currentPost.id);
@@ -422,12 +432,21 @@ var vm = new Vue({
       var xhr = new XMLHttpRequest();
       var self = this;
       
-      xhr.open('GET', self.endpoint);
-      xhr.onload = function () {
+      xhr.open('GET', this.endpoint);
+      xhr.onload = function() {
         var response = JSON.parse(xhr.responseText).data;
-        self.prepareData(response);
-        // just preload the first post
-        self.loadPost();
+        response = self.prepareData(response);
+        
+        // just make the first one the active one right?
+        response.children[0].active = true;
+        
+        // setup meta stuff
+        self.postMeta.after = response.after;
+        self.postMeta.count += response.children.length;
+        self.posts = self.posts.concat(response.children);
+        
+        // just preload the first (new) post
+        self.loadPost(response.children[0]);
       };
       xhr.send();
     },
@@ -444,6 +463,14 @@ var vm = new Vue({
           delete posts[index];
         } else {
           posts[index].active = false;
+          
+          // normalize domain
+          switch (post.data.media.type) {
+            case 'youtube.com':
+            case 'm.youtube.com':
+              posts[index].data.media.type = 'youtube.com';
+              break;
+          }
         }
       });
       
@@ -452,13 +479,7 @@ var vm = new Vue({
         return element;
       });
       
-      // just make the first one the active one right?
-      data.children[0].active = true;
-      
-      // setup meta stuff
-      this.postMeta.after = data.after;
-      this.postMeta.count += data.children.length;
-      this.posts = data.children;
+      return data;
     },
     // Take currently active post and copy all info into current post object
     loadPost: function(postToLoad) {
@@ -545,7 +566,8 @@ var vm = new Vue({
       if (this.posts[currentIndex + 1] != null) {
         this.loadPost(this.posts[currentIndex + 1]);
       } else {
-        console.log('wat do?');
+        // Get more data's I guess?
+        this.fetchData();
       }
     },
     updateStatePlaying: function() {

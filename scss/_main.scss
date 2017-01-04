@@ -3,7 +3,7 @@ body {
   // This pattern is downloaded from www.subtlepatterns.com 
   // If you need more, that's where to get'em.
   // ========================================================
-  background-image: url('https://cdn.gomix.com/630c7520-5581-4686-ba26-06f0aa5f7e5f/geometry2.png');
+  // background-image: url('https://cdn.gomix.com/630c7520-5581-4686-ba26-06f0aa5f7e5f/geometry2.png');
 }
 
 .page {
@@ -61,8 +61,8 @@ header {
 }
 
 .player {
-  background: $primary-color;
-  color: $white;
+  background: $dark-gray;
+  // color: $white;
   
   .embed-placeholder {
     display: block;
@@ -87,8 +87,8 @@ header {
 }
 
 .meta-bar {
-  background: $secondary-color;
-  color: $white;
+  background: $medium-gray;
+  // color: $white;
   // flex-basis: 4rem;
   
   &__title {
@@ -146,7 +146,7 @@ header {
   }
   
   &_active {
-    background: $light-gray;
+    background: $dark-gray;
   }
 }
 

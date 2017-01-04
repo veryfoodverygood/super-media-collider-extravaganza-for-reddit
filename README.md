@@ -5,6 +5,12 @@
 
 notes:  
 * keyboard shortcuts
+  * j - prev
+  * cursor left - prev
+  * l - next
+  * cursor right - next
+  * space - pause
+  * k - pause
 * new sites
 * upvote downvote?
 

@@ -45,6 +45,14 @@
             v-bind:thumbnail="upcomingPost.data.thumbnail"
             v-on:click.native="emitLoadPost(index)">
           </upcoming-post>
+          <li>
+            <button
+              type="button"
+              class="button secondary expanded"
+              v-on:click="$emit('request-more')">
+              Load More Posts
+            </button>
+          </li>
         </ul>
       </section>
     </script>
@@ -180,7 +188,8 @@
         <div class="column column_playlist shrink">
           <playlist
             v-bind:posts="posts"
-            v-on:load-post="loadPostFromEvent">
+            v-on:load-post="loadPostFromEvent"
+            v-on:request-more="fetchData">
           </playlist>
         </div>
       </div>

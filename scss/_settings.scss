@@ -57,12 +57,12 @@ $foundation-palette: (
   alert: #cc4b37,
 );
 $light-gray: #e6e6e6;
-$medium-gray: #cacaca;
-$dark-gray: #8a8a8a;
+$medium-gray: #464646;
+$dark-gray: #2e2e2e;
 $black: #0a0a0a;
 $white: #fefefe;
-$body-background: $white;
-$body-font-color: $black;
+$body-background: $black;
+$body-font-color: $white;
 $body-font-family: 'Open Sans', sans-serif;
 $body-antialiased: true;
 $brand-font-family: 'Bungee Shade', sans-serif;
@@ -286,9 +286,9 @@ $callout-link-tint: 30%;
 // 14. Card
 // --------
 
-$card-background: $white;
+$card-background: $dark-gray;
 $card-font-color: $body-font-color;
-$card-divider-background: $light-gray;
+$card-divider-background: $medium-gray;
 $card-border: 1px solid $light-gray;
 $card-shadow: none;
 $card-border-radius: $global-radius;
