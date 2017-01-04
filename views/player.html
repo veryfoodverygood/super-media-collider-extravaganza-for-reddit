@@ -45,10 +45,10 @@
             v-bind:thumbnail="upcomingPost.data.thumbnail"
             v-on:click.native="emitLoadPost(index)">
           </upcoming-post>
-          <li>
+          <li class="flex-container align-right">
             <button
               type="button"
-              class="button secondary expanded"
+              class="button secondary request-more"
               v-on:click="$emit('request-more')">
               Load More Posts
             </button>
@@ -120,6 +120,11 @@
           </h2>
         </header>
         <div class="comments__threads comment-threads">
+          <div 
+            class="no-comments"
+            v-show="comments == null || comments.length === 0">
+            No comments here, sorry...
+          </div>
           <comment
             v-for="comment in comments"
             v-bind:comment="comment.data">
