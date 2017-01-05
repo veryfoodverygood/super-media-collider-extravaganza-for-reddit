@@ -5,13 +5,19 @@
 
 notes:  
 * keyboard shortcuts
-  * j - prev
   * cursor left - prev
-  * l - next
   * cursor right - next
   * space - pause
-  * k - pause
-* new sites
+
+todos:
+* scroll to active post in playlist
+* more _style_
+* icons!
+* support more sites
+  * vimeo
+  * soundcloud
+  * images?!?
+* resize title bar layout on post change
 * upvote downvote?
 
 Potential Names

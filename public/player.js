@@ -64,6 +64,17 @@ Vue.component('playlist', {
         makeSSL: function(url) {
           return url.replace('http://', 'https://');
         }
+      },
+      
+      watch: {
+        active: function(isActive) {
+          if (isActive) {
+            var upcomingPosts = document.querySelectorAll('.upcoming-posts')[0],
+                buffer = 50;
+                
+            upcomingPosts.scrollTop = this.$el.offsetTop - buffer;
+          }
+        }
       }
     }
   }
