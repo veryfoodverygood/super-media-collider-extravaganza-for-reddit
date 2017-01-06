@@ -10,7 +10,6 @@ notes:
   * space - pause
 
 todos:
-* scroll to active post in playlist
 * more _style_
 * icons!
 * support more sites

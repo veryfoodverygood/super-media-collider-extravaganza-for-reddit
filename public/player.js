@@ -133,9 +133,11 @@ Vue.component('player', {
       } else {
         switch (this.post.media.type) {
           case 'youtube.com':
-          case 'youtube.com':
           // case 'vimeo.com':
             return 'api-embed';
+            
+          case 'streamable.com':
+            return 'static-embed'
           
           default:
             return 'generic-embed';
@@ -214,7 +216,9 @@ Vue.component('player', {
             // do a vimeo thing
         }
         
-        this.playerApi = null;        
+        this.playerApi = null;
+        
+        this.$emit('player-destroyed');
       },
       
       methods: {
@@ -300,6 +304,61 @@ Vue.component('player', {
       
       props: {
         backupEmbedHtml: String
+      }
+    },
+    'static-embed': {
+      template: '<div class="embed-wrapper" v-html="embedHtml"></div>',
+      
+      props: {
+        domain: String,
+        width: Number,
+        height: Number,
+        mediaUrl: String,
+        playerStatus: String,
+        backupEmbedHtml: String
+      },
+      
+      data: function() {
+        return {
+          embedHtml: ''
+        };
+      },
+      
+      created: function() {
+        switch (this.domain) {
+          case 'streamable.com':
+            var xhr = new XMLHttpRequest(),
+                self = this,
+                endpoint;
+              
+            endpoint = 'https://api.streamable.com/oembed.json'
+              + '?url=' + this.mediaUrl
+              + '&maxwidth=' + this.width
+              + '&maxheight=' + this.height;
+            
+            xhr.open('GET', endpoint);
+            xhr.onload = function() {
+              var response = JSON.parse(xhr.responseText),
+                  domParser = new DOMParser();
+              
+              if (response.html == null) {
+                console.log('uh oh');
+              }
+              
+              // all this back and forth seems silly but eh
+              var responseDoc = domParser.parseFromString(response.html, 'text/html');
+              var iframeHtml = responseDoc.getElementsByTagName('iframe')[0];
+              iframeHtml.setAttribute('width', self.width);
+              iframeHtml.setAttribute('height', self.height);
+              
+              self.embedHtml = iframeHtml.parentNode.innerHTML;
+            };
+            xhr.send();
+            break;
+            
+          default:
+            this.embedHtml = this.backupEmbedHtml;
+        }
       }
     },
     'no-media': {

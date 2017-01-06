@@ -1,6 +1,6 @@
 {
 	"name": "super-media-collider-extravaganza-for-reddit",
-	"version": "0.0.5",
+	"version": "0.1.0",
 	"description": "Yet another Reddit Player",
 	"private": true,
 	"main": "server.js",
@@ -13,7 +13,7 @@
 		"foundation-sites": "^6.3.0",
 		"path": "^0.12.7",
 		"postcss-middleware": "^1.1.2",
-		"autoprefixer": "^6.6.0",
+		"autoprefixer": "^6.6.1",
 		"motion-ui": "^1.2.2",
 		"animate.css": "^3.5.2"
 	},
@@ -21,12 +21,14 @@
 		"node": "6.9.1"
 	},
 	"repository": {
-		"url": "https://gomix.com/#!/project/welcome-project"
+		"url": "https://github.com/RedRiderX/super-media-collider-extravaganza-for-reddit"
 	},
 	"keywords": [
 		"node",
 		"gomix",
-		"express"
+		"express",
+		"foundation",
+		"reddit"
 	],
 	"license": "MIT"
 }
