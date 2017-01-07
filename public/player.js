@@ -4,7 +4,7 @@
 
 var app = {
   config: {
-    nsfwThumbnailUrl: 'https://cdn.gomix.com/630c7520-5581-4686-ba26-06f0aa5f7e5f%2Fnsfw-icon.png'
+    nsfwThumbnailUrl: 'https://cdn.gomix.com/630c7520-5581-4686-ba26-06f0aa5f7e5f%2Fnsfw-thumbnail.png'
   },
   mediaStatus: {
     playing: 'playing',
@@ -45,10 +45,11 @@ Vue.component('playlist', {
       
       props: {
         active: Boolean,
+        nsfw: Boolean,
         title: String,
         thumbnail: String
       },
-
+      
       filters: {
         isThumbnail: function(url) {
           // Cheat by just checking common cases I guess?
@@ -70,7 +71,7 @@ Vue.component('playlist', {
         active: function(isActive) {
           if (isActive) {
             var upcomingPosts = document.querySelectorAll('.upcoming-posts')[0],
-                buffer = 50;
+                buffer = 100;
                 
             upcomingPosts.scrollTop = this.$el.offsetTop - buffer;
           }
@@ -416,6 +417,12 @@ Vue.component('comment', {
   
   props: {
     comment: Object,
+  },
+  
+  data: function() {
+    return {
+      collapsed: false,
+    };
   },
   
   computed: {

@@ -54,7 +54,7 @@ $foundation-palette: (
   secondary: #767676,
   success: #3adb76,
   warning: #ffae00,
-  alert: #cc4b37,
+  alert: red,
 );
 $light-gray: #e6e6e6;
 $medium-gray: #464646;
@@ -66,6 +66,7 @@ $body-font-color: $white;
 $body-font-family: 'Open Sans', sans-serif;
 $body-antialiased: true;
 $brand-font-family: 'Bungee Shade', sans-serif;
+$secondary-brand-font-family: 'Bungee', sans-serif;
 $global-margin: 1rem;
 $global-padding: 1rem;
 $global-weight-normal: normal;

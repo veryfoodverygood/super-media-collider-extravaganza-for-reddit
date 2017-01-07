@@ -138,6 +138,7 @@ header {
     right: 0;
     width: 30rem;
     overflow-y: scroll;
+    overflow-x: hidden;
     background: $body-background;
   }
 }
@@ -157,6 +158,28 @@ header {
   &_active {
     background: $dark-gray;
   }
+  
+  &_nsfw {
+  
+    .upcoming-post__thumbnail {
+      position: relative;
+      
+      &::before {
+        content: 'NSFW';
+        color: $alert-color;
+        font-family: $brand-font-family;
+        font-size: 400%;
+        position: absolute;
+        bottom: 0;
+        right: -2rem;
+        transform: rotate(-22deg);
+      }
+      
+      img {
+        opacity: 0.2;
+      }
+    }
+  }
 }
 
 .comments {
@@ -167,8 +190,14 @@ header {
   border: 2px solid $light-gray;
   padding: $global-padding / 2;
   margin-top: $global-margin;
-  
+  overflow: hidden;
+
   & + & {
+  }
+  
+  &_collapsed {
+    height: 3rem;
+    opacity: .75;
   }
   
   &__author {
@@ -182,6 +211,17 @@ header {
         margin-bottom: 0;
       }
     }
+  }
+  
+  button {
+    color: $white;
+  }
+}
+
+.md {
+  
+  a {
+    word-wrap: break-word;
   }
 }
 

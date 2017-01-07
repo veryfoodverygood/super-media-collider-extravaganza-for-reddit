@@ -7,9 +7,8 @@
     <link id="favicon" rel="icon" href="https://gomix.com/favicon-app.ico" type="image/x-icon">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link 
-      href="https://fonts.googleapis.com/css?family=Audiowide|Bungee|Bungee+Shade|Ewert|Monoton|Open+Sans|Shrikhand"
-      rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Bungee|Bungee+Shade|Open+Sans" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/emojione@2.2.7/assets/css/emojione-awesome.css">
     <link rel="stylesheet" href="/style.css">
   </head>
   <body>
@@ -41,6 +40,7 @@
           <upcoming-post
             v-for="(upcomingPost, index) in posts"
             v-bind:active="upcomingPost.active"
+            v-bind:nsfw="upcomingPost.data.over_18"
             v-bind:title="upcomingPost.data.title"
             v-bind:thumbnail="upcomingPost.data.thumbnail"
             v-on:click.native="emitLoadPost(index)">
@@ -60,15 +60,16 @@
     <script type="text/x-template" id="upcoming-post-template">
       <li 
         class="upcoming-post flex-container"
-        v-bind:class="{ 'upcoming-post_active': active }">
+        v-bind:class="{ 'upcoming-post_active': active, 'upcoming-post_nsfw': nsfw }">
         <div class="column">
           <span class="upcoming-post__title">{{ title }}</span>
         </div>
         <div class="column flex-child-shrink">
-          <img 
-            v-bind:src="thumbnail | isThumbnail | makeSSL"
-            alt="Post Thumbnail"
-            class="upcoming-post__thumbnail">
+          <div class="upcoming-post__thumbnail">
+            <img 
+              v-bind:src="thumbnail | isThumbnail | makeSSL"
+              alt="Post Thumbnail">
+          </div>
         </div>
       </li>
     </script>
@@ -90,19 +91,19 @@
               type="button"
               class="control control_prev button"
               v-on:click="playPrev">
-              Previous
+              <i class="e1a-track_previous"></i> Previous
             </button>
             <button 
               type="button"
               class="control control_play control_pause button"
               v-on:click="togglePlay">
-              {{ toggleLabel }}
+              <i class="e1a-play_pause"></i> {{ toggleLabel }}
             </button>
             <button 
               type="button"
               class="control control_next button"
               v-on:click="playNext">
-              Next
+              <i class="e1a-track_next"></i> ️Next
             </button>
           </div>
         </div>
@@ -136,8 +137,17 @@
     <script type="text/x-template" id="comment-template">
       <div
         class="comment"
-        v-if="body">
-        <div class="comment__author">{{ author }}</div>
+        v-if="body"
+        v-bind:class="{ 'comment_collapsed': collapsed }">
+        <div class="comment__header">
+          <button
+            type="button"
+            class="comment__control comment__control_collapse"
+            v-on:click="collapsed = !collapsed">
+            <i class="e1a-arrow_up_down"></i>️{{ collapsed ? 'Show' : 'Hide' }}
+          </button>
+          <span class="comment__author">{{ author }}</span>
+        </div>
         <div class="comment__text" v-html="body"></div>
         <div class="sub-comments">
           <comment
@@ -210,6 +220,9 @@
           <a href="https://gomix.com/#!/project/super-media-collider-extravaganza-for-reddit">
             Remix this in Gomix
           </a>
+        </li>
+        <li>
+          <a href="http://emojione.com/">Emojis by EmojiOne under CC-BY-4.0</a>
         </li>
       </ul>
     </footer>
