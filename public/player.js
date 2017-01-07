@@ -273,10 +273,10 @@ Vue.component('player', {
         },
         getYoutubeId: function(url) {
           // this is a black box don't touch it plz
-          var regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+          var regExp = /(?:[?&]v=|v%3D|\/embed\/|\/1\/|\/v\/|https:\/\/(?:www\.)?youtu\.be\/)([^&\n?#%]+)/;
           var match = url.match(regExp);
-          if (match && match[2].length == 11) {
-            return match[2];
+          if (match && match[1].length == 11) {
+            return match[1];
           }
           console.log('Uh oh');
         },
