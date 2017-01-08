@@ -96,8 +96,15 @@ Vue.component('player', {
   },
   
   mounted: function() {
+    var self = this;
+    
     this.height = this.$el.clientHeight;
     this.width = this.$el.clientWidth;
+    
+    window.onresize = function(event) {
+      self.height = self.$el.clientHeight;
+      self.width = self.$el.clientWidth;
+    }
   },
   
   computed: {
@@ -440,6 +447,12 @@ Vue.component('comment', {
       }
       return this.comment.replies.data.children
     },
+  },
+  
+  watch: {
+    comment: function(newValue) {
+      this.collapsed = false;
+    }
   }
 });
 

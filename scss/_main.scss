@@ -52,6 +52,7 @@ header {
 }
 
 .row_player {
+  overflow: hidden;
   
   @include breakpoint(large) {
     height: 100vh;  
@@ -92,7 +93,8 @@ header {
 
 .column_playlist {
   z-index: 10;
-  
+  transition: transform .3s ease;
+
   .request-more {
     width: 11.5rem;
     margin-bottom: 0;
@@ -104,6 +106,13 @@ header {
     
     .request-more {
       width: 30rem;
+    }
+  }
+
+  @include breakpoint(large) {
+    
+    &:hover {
+      transform: perspective(56rem) rotateY(5deg) scale(1);
     }
   }
 }
@@ -135,7 +144,6 @@ header {
 
 .playlist {
   //background-color: $body-background;
-  transition: transform 1s ease;
   
   height: 100%;
   overflow-y: scroll;
@@ -145,7 +153,6 @@ header {
     overflow: visible;
     // width: 30rem; // original size
     width: 11.5rem;
-    transform: perspective(56rem) rotateY(5deg) scale(1);
   }
 }
 
