@@ -24,6 +24,19 @@ body {
   }
 }
 
+.page-title {
+  font-family: $brand-font-family;
+  font-weight: bold;
+}
+
+.mood {
+  &_video {
+    .e1a-film_frames {
+      filter: #{'invert()'};
+    }
+  }
+}
+
 header {
   text-align: center;
   
@@ -97,6 +110,7 @@ header {
 
 .meta-bar {
   background: $medium-gray;
+  position: relative;
   // color: $white;
   // flex-basis: 4rem;
   
@@ -113,10 +127,16 @@ header {
   &__controls {
     margin-bottom: 0;
   }
+  
+  .control {
+    cursor: pointer;
+  }
 }
 
 .playlist {
-  background-color: $body-background;
+  //background-color: $body-background;
+  transition: transform 1s ease;
+  
   height: 100%;
   overflow-y: scroll;
   
@@ -125,6 +145,7 @@ header {
     overflow: visible;
     // width: 30rem; // original size
     width: 11.5rem;
+    transform: perspective(56rem) rotateY(5deg) scale(1);
   }
 }
 
@@ -139,13 +160,18 @@ header {
     width: 30rem;
     overflow-y: scroll;
     overflow-x: hidden;
-    background: $body-background;
+    // background: $body-background;
+    
+    li:last-child {
+      margin-bottom: 100%;
+    }
   }
 }
 
 .upcoming-post {
   cursor: pointer;
   padding: $global-padding 0;
+  background: rgba($dark-gray, .6);
   
   &:hover {
     background: $medium-gray;
@@ -169,10 +195,11 @@ header {
         color: $alert-color;
         font-family: $brand-font-family;
         font-size: 400%;
+        font-weight: bold;
         position: absolute;
         bottom: 0;
         right: -2rem;
-        transform: rotate(-22deg);
+        transform: rotate(-22deg)
       }
       
       img {
@@ -184,11 +211,16 @@ header {
 
 .comments {
   margin-top: $global-margin * 1.5;
+  
+  &__title {
+    font-family: $brand-font-family;
+    font-weight: bold;
+  }
 }
 
 .comment {
-  border: 2px solid $light-gray;
-  padding: $global-padding / 2;
+  border: 1px solid $light-gray;
+  padding: $global-padding / 4;
   margin-top: $global-margin;
   overflow: hidden;
 

@@ -86,25 +86,25 @@
           </h2>
         </div>
         <div class="column shrink">
-          <div class="meta-bar__controls button-group">
-            <button
-              type="button"
-              class="control control_prev button"
+          <div class="meta-bar__controls">
+            <span
+              class="control control_prev"
               v-on:click="playPrev">
-              <i class="e1a-track_previous"></i> Previous
-            </button>
-            <button 
-              type="button"
-              class="control control_play control_pause button"
+              <i class="e1a-track_previous e1a-3x"></i>
+              <span class="show-for-sr">Previous</span>
+            </span>
+            <span 
+              class="control control_play control_pause"
               v-on:click="togglePlay">
-              <i class="e1a-play_pause"></i> {{ toggleLabel }}
-            </button>
-            <button 
-              type="button"
-              class="control control_next button"
+              <i class="e1a-play_pause e1a-3x"></i>
+              <span class="show-for-sr">{{ toggleLabel }}</span>
+            </span>
+            <span 
+              class="control control_next"
               v-on:click="playNext">
-              <i class="e1a-track_next"></i> ️Next
-            </button>
+              <i class="e1a-track_next e1a-3x"></i>
+              <div class="show-for-sr">Next</div>
+            </span>
           </div>
         </div>
       </section>    
@@ -113,9 +113,8 @@
     <script type="text/x-template" id="comments-template">
       <section class="comments row flex-dir-column">
         <header>
-          <h2>
-            <a 
-              v-bind:href="threadPermalink">
+          <h2 class="comments__title">
+            <a v-bind:href="threadPermalink">
               Discussion On Reddit
             </a>
           </h2>
@@ -144,7 +143,8 @@
             type="button"
             class="comment__control comment__control_collapse"
             v-on:click="collapsed = !collapsed">
-            <i class="e1a-arrow_up_down"></i>️{{ collapsed ? 'Show' : 'Hide' }}
+            <i class="e1a-arrow_up_down"></i>
+            <span class="show-for-sr">️{{ collapsed ? 'Show' : 'Hide' }}</span>
           </button>
           <span class="comment__author">{{ author }}</span>
         </div>
@@ -165,7 +165,9 @@
         name="silly-transition"
         enter-active-class="animated tada"
         leave-active-class="animated bounceOutRight">
-        <h1 v-if="show">
+        <h1 
+          class="page-title"
+          v-if="show">
           <a href="/">Super Media Collider Extravaganza for Reddit!</a>
         </h1>
       </transition>

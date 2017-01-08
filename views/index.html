@@ -16,7 +16,7 @@
     <script type="text/x-template" id="mood-template">
       <section class="mood card">
         <header class="mood__header card-divider">
-          <h3>{{ title }}</h3>
+          <h3><i v-bind:class="'e1a-' + icon"></i>{{ title }}</h3>
         </header>
         <ul class="mood__options card-section menu vertical">
           <li v-for="option in options">

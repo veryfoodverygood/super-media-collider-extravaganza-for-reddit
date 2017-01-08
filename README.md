@@ -3,7 +3,7 @@
 ## All of the cool, none of the conspiracy theories.
 ---
 
-notes:  
+notes:
 * keyboard shortcuts
   * cursor left - prev
   * cursor right - next
@@ -16,6 +16,7 @@ todos:
   * vimeo
   * soundcloud
   * images?!?
+  * twitch
 * resize title bar layout on post change
 * upvote downvote?
 

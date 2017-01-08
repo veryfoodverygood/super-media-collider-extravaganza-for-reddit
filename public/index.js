@@ -11,6 +11,7 @@ Vue.component('mood', {
   data: function() {
     return {
       title: this.data.title,
+      icon: this.data.icon,
       options: this.data.options
     }
   }
@@ -23,6 +24,7 @@ var moods = new Vue({
     moods: [
       {
         name: 'video',
+        icon: 'film_frames',
         title: 'Video',
         options: [
           {
@@ -41,6 +43,7 @@ var moods = new Vue({
       },
       {
         name: 'music',
+        icon: 'musical_keyboard',
         title: 'Music',
         options: [
           {
@@ -51,6 +54,7 @@ var moods = new Vue({
       },
       {
         name: 'images',
+        icon: 'frame_photo',
         title: 'Images',
         options: [
           {
