@@ -114,13 +114,7 @@ Vue.component('player', {
     },
 
     mediaType: function() {
-      if (this.post.media == null ||
-          this.post.media == null
-      ) {
-        return '';
-      } else {
-        return this.post.media.type
-      }
+      return this.post.domain
     },
     
     embedCode: function() {
@@ -134,22 +128,18 @@ Vue.component('player', {
     },
     
     currentView: function() {
-      if (this.post.media == null ||
-          this.post.media == null
-      ) {
-        return 'no-media';
-      } else {
-        switch (this.post.media.type) {
-          case 'youtube.com':
-          // case 'vimeo.com':
-            return 'api-embed';
-            
-          case 'streamable.com':
-            return 'static-embed'
+      switch (this.post.domain) {
+        case 'youtube.com':
+        // case 'vimeo.com':
+          return 'api-embed';
           
-          default:
-            return 'generic-embed';
-        }
+        case 'streamable.com':
+        case 'gfycat.com':
+        case 'imgur.com':
+          return 'static-embed'
+        
+        default:
+          return 'generic-embed';
       }
     },
   },
@@ -364,6 +354,92 @@ Vue.component('player', {
             xhr.send();
             break;
             
+          case 'gfycat.com':
+            // just strip the fixed width from embedly stuff
+            var response = this.backupEmbedHtml,
+                domParser = new DOMParser();
+            
+            // all this back and forth seems silly but eh
+            var responseDoc = domParser.parseFromString(response, 'text/html');
+            var iframeHtml = responseDoc.getElementsByTagName('iframe')[0];
+            iframeHtml.setAttribute('width', this.width);
+            iframeHtml.setAttribute('height', this.height);
+            
+            this.embedHtml = iframeHtml.parentNode.innerHTML;
+            break;
+            
+          case 'imgur.com':
+            // Treat them all like gifvs?
+            // if no extenstion, add .gifv
+            var hasExtension = /\.[^\/]*$/i,
+                mediaUrl = this.mediaUrl,
+                extension,
+                templateType;
+                
+            mediaUrl = mediaUrl.replace('http://', 'https://');    
+            extension = mediaUrl.match(hasExtension);
+            templateType = 'image';
+            
+            if (extension == null) {
+              mediaUrl += '.gifv';
+              templateType = 'iframe';
+            } else if (extension[0] === '.gifv') {
+              templateType = 'iframe';
+            }
+            
+            switch (templateType) {
+              case 'iframe':
+                this.embedHtml = '<iframe allowfullscreen frameborder="0" src="' + mediaUrl
+                  + '" width="' + this.width
+                  + '" height="' + this.height
+                  + '"></iframe>';
+                break;
+              case 'image':
+                this.embedHtml = '<img src="' + mediaUrl + '">';
+                break;
+            }
+            
+            break;
+            
+            // var xhr = new XMLHttpRequest(),
+            //     self = this,
+            //     mediaId = this.findImgurId(this.mediaUrl),
+            //     endpoint;
+                
+            // if (mediaId == null) {
+            //   break;
+            // }
+              
+            // endpoint = 'https://api.imgur.com/3/image/' + mediaId;
+            
+            // xhr.open('GET', endpoint);
+            // xhr.onload = function() {
+            //   var response = JSON.parse(xhr.responseText);
+            //   var mediaType = response.data.type;
+              
+            //   switch (mediaType) {
+            //     case 'image/gif':
+            //     case 'image/gif':
+            //       // code
+            //       break;
+            //   }
+              
+            //   if (response.html == null) {
+            //     console.log('uh oh');
+            //   }
+              
+            //   // all this back and forth seems silly but eh
+            //   var responseDoc = domParser.parseFromString(response.html, 'text/html');
+            //   var iframeHtml = responseDoc.getElementsByTagName('iframe')[0];
+            //   iframeHtml.setAttribute('width', self.width);
+            //   iframeHtml.setAttribute('height', self.height);
+              
+            //   self.embedHtml = iframeHtml.parentNode.innerHTML;
+            // };
+            // xhr.send();
+            // break;
+          
+            
           default:
             this.embedHtml = this.backupEmbedHtml;
         }
@@ -475,6 +551,10 @@ var vm = new Vue({
     comments: null,
     linkPostType: 't3',
     commentPostType: 't1',
+    allowedPostHints: [
+      'link',
+      'rich:video'
+    ],
     postMeta: {
       after: null,
       count: 0,
@@ -482,7 +562,8 @@ var vm = new Vue({
         name: null,
         title: 'No Post Loaded',
         mediaStatus: app.mediaStatus.loading,
-        permalink: '/#'
+        permalink: '/#',
+        url: '/#'
       }
     },
     defaultPostData: {
@@ -567,19 +648,22 @@ var vm = new Vue({
       data.children.forEach(function(post, index, posts) {
         // we only like links here
         // And no self posts please
-        if (post.kind !== self.linkPostType ||
-            post.data.is_self ||
-            post.data.media == null
-        ) {
+        if (!self.allowedPostHints.includes(post.data.post_hint)) {
           delete posts[index];
         } else {
           posts[index].active = false;
           
           // normalize domain
-          switch (post.data.media.type) {
+          // switch (post.data.media.type) {
+          switch (post.data.domain) {
             case 'youtube.com':
             case 'm.youtube.com':
-              posts[index].data.media.type = 'youtube.com';
+            case 'youtu.be':
+              posts[index].data.domain = 'youtube.com';
+              break;
+            case 'imgur.com':
+            case 'i.imgur.com':
+              posts[index].data.domain = 'imgur.com';
               break;
           }
         }
