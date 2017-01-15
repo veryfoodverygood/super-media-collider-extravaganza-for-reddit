@@ -558,6 +558,7 @@ var vm = new Vue({
     postMeta: {
       after: null,
       count: 0,
+      loadedIds: [],
       currentPost: {
         name: null,
         title: 'No Post Loaded',
@@ -646,9 +647,11 @@ var vm = new Vue({
       var self = this;
 
       data.children.forEach(function(post, index, posts) {
-        // we only like links here
         // And no self posts please
-        if (!self.allowedPostHints.includes(post.data.post_hint)) {
+        if (!self.allowedPostHints.includes(post.data.post_hint)
+            // no posts already loaded please
+            && self.postMeta.loadedIds.indexOf(post.data.id) > -1
+        ) {
           delete posts[index];
         } else {
           posts[index].active = false;
@@ -666,6 +669,8 @@ var vm = new Vue({
               posts[index].data.domain = 'imgur.com';
               break;
           }
+          
+          self.postMeta.loadedIds.push(post.data.id);
         }
       });
       
