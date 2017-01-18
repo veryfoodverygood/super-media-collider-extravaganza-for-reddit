@@ -39,6 +39,10 @@ var moods = new Vue({
             title: 'Obscure Media',
             url: '/r/obscuremedia'
           },
+          {
+            title: 'Interdimensional Cable',
+            url: '/r/InterdimensionalCable'
+          },
         ] 
       },
       {

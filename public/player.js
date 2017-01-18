@@ -134,6 +134,7 @@ Vue.component('player', {
           return 'api-embed';
           
         case 'streamable.com':
+        case 'vid.me':
         case 'gfycat.com':
         case 'imgur.com':
           return 'static-embed'
@@ -330,6 +331,36 @@ Vue.component('player', {
                 endpoint;
               
             endpoint = 'https://api.streamable.com/oembed.json'
+              + '?url=' + this.mediaUrl
+              + '&maxwidth=' + this.width
+              + '&maxheight=' + this.height;
+            
+            xhr.open('GET', endpoint);
+            xhr.onload = function() {
+              var response = JSON.parse(xhr.responseText),
+                  domParser = new DOMParser();
+              
+              if (response.html == null) {
+                console.log('uh oh');
+              }
+              
+              // all this back and forth seems silly but eh
+              var responseDoc = domParser.parseFromString(response.html, 'text/html');
+              var iframeHtml = responseDoc.getElementsByTagName('iframe')[0];
+              iframeHtml.setAttribute('width', self.width);
+              iframeHtml.setAttribute('height', self.height);
+              
+              self.embedHtml = iframeHtml.parentNode.innerHTML;
+            };
+            xhr.send();
+            break;
+            
+          case 'vid.me':
+            var xhr = new XMLHttpRequest(),
+                self = this,
+                endpoint;
+              
+            endpoint = 'https://api.vid.me/videos/oembed.json'
               + '?url=' + this.mediaUrl
               + '&maxwidth=' + this.width
               + '&maxheight=' + this.height;
@@ -650,7 +681,7 @@ var vm = new Vue({
         // And no self posts please
         if (!self.allowedPostHints.includes(post.data.post_hint)
             // no posts already loaded please
-            && self.postMeta.loadedIds.indexOf(post.data.id) > -1
+            || self.postMeta.loadedIds.includes(post.data.id)
         ) {
           delete posts[index];
         } else {
