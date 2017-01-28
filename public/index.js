@@ -73,6 +73,10 @@ var moods = new Vue({
             title: 'Me_Irl',
             url: '/r/me_irl'
           },
+          {
+            title: 'The Way We Were',
+            url: '/r/TheWayWeWere/'
+          }
         ]
       }
     ]

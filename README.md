@@ -29,7 +29,6 @@ Potential Names
 
 ---
 Project code is MIT  
-Interrobang by Mike Jewett from the Noun Project
 
 ---
 https://github.com/vimeo/player.js

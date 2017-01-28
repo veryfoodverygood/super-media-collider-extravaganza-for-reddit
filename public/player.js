@@ -272,7 +272,7 @@ Vue.component('player', {
         },
         getYoutubeId: function(url) {
           // this is a black box don't touch it plz
-          var regExp = /(?:[?&]v=|v%3D|\/embed\/|\/1\/|\/v\/|https:\/\/(?:www\.)?youtu\.be\/)([^&\n?#%]+)/;
+          var regExp = /(?:[?&]v=|v%3D|\/embed\/|\/1\/|\/v\/|http(?:s)?:\/\/(?:www\.)?youtu\.be\/)([^&\n?#%]+)/;
           var match = url.match(regExp);
           if (match && match[1].length == 11) {
             return match[1];
@@ -328,10 +328,13 @@ Vue.component('player', {
           case 'streamable.com':
             var xhr = new XMLHttpRequest(),
                 self = this,
-                endpoint;
+                endpoint,
+                mediaUrl = this.mediaUrl.replace('http://', 'https://');
+            
+            mediaUrl = mediaUrl.replace('http://', 'https://');  ;
               
             endpoint = 'https://api.streamable.com/oembed.json'
-              + '?url=' + this.mediaUrl
+              + '?url=' + mediaUrl
               + '&maxwidth=' + this.width
               + '&maxheight=' + this.height;
             
