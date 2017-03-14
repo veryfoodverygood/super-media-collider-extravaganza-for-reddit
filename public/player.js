@@ -438,10 +438,7 @@ Vue.component('player', {
                 mediaUrl = mediaUrl.replace('http://', 'https://');
 
                 // all this back and forth seems silly but eh              
-                self.embedHtml = '<img '
-                  + 'src="' + mediaUrl + '" '
-                  + 'width="' + self.width + '" '
-                  + 'height="' + self.height + '">';
+                self.embedHtml = '<div class="image-wrapper" style="width:' + self.width + 'px;height:' + self.height + 'px;"><img src="' + mediaUrl + '"></div>';
               }
             };
             xhr.send();
