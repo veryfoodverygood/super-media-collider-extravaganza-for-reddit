@@ -4,7 +4,7 @@
 
 var app = {
   config: {
-    nsfwThumbnailUrl: 'https://cdn.gomix.com/630c7520-5581-4686-ba26-06f0aa5f7e5f%2Fnsfw-thumbnail.png',
+    nsfwThumbnailUrl: 'https://cdn.glitch.com/630c7520-5581-4686-ba26-06f0aa5f7e5f%2Fnsfw-thumbnail.png',
     // Dont' worry man it's supposed to be public
     imgurClientId: '2ac6a4219c940db'
   },
@@ -139,7 +139,10 @@ Vue.component('player', {
         case 'vid.me':
         case 'gfycat.com':
         case 'imgur.com':
-          return 'static-embed'
+          return 'static-embed';
+        
+        case 'i.redd.it':
+          return 'image-embed';
         
         default:
           return 'generic-embed';
@@ -305,6 +308,16 @@ Vue.component('player', {
       
       props: {
         backupEmbedHtml: String
+      }
+    },
+    'image-embed': {
+      template: '<div class="embed-wrapper"><div class="image-wrapper" v-bind:style="{width: width + \'px\',height: height + \'px\'}"><img v-bind:src="mediaUrl"></div></div>',
+      
+      props: {
+        backupEmbedHtml: String,
+        mediaUrl: String,
+        width: Number,
+        height: Number
       }
     },
     'static-embed': {
@@ -558,6 +571,7 @@ var vm = new Vue({
     commentPostType: 't1',
     allowedPostHints: [
       'link',
+      'image',
       'rich:video'
     ],
     postMeta: {
@@ -672,6 +686,10 @@ var vm = new Vue({
             case 'imgur.com':
             case 'i.imgur.com':
               posts[index].data.domain = 'imgur.com';
+              break;
+            case 'i.redd.it':
+            case 'i.reddituploads.com':
+              posts[index].data.domain = 'i.redd.it';
               break;
           }
           

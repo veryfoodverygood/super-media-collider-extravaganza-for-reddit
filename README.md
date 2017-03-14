@@ -14,7 +14,6 @@ todos:
 * support more sites
   * vimeo: https://github.com/vimeo/player.js
   * soundcloud
-  * images?!?
   * twitch
 * resize title bar layout on post change
 * upvote downvote?
