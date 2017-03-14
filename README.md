@@ -1,6 +1,5 @@
 # Super Media Collider Extranaganza for Reddit!
 
-## All of the cool, none of the conspiracy theories.
 ---
 
 notes:
@@ -13,7 +12,7 @@ todos:
 * more _style_
 * icons!
 * support more sites
-  * vimeo
+  * vimeo: https://github.com/vimeo/player.js
   * soundcloud
   * images?!?
   * twitch
@@ -29,6 +28,3 @@ Potential Names
 
 ---
 Project code is MIT  
-
----
-https://github.com/vimeo/player.js

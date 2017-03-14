@@ -4,7 +4,9 @@
 
 var app = {
   config: {
-    nsfwThumbnailUrl: 'https://cdn.gomix.com/630c7520-5581-4686-ba26-06f0aa5f7e5f%2Fnsfw-thumbnail.png'
+    nsfwThumbnailUrl: 'https://cdn.gomix.com/630c7520-5581-4686-ba26-06f0aa5f7e5f%2Fnsfw-thumbnail.png',
+    // Dont' worry man it's supposed to be public
+    imgurClientId: '2ac6a4219c940db'
   },
   mediaStatus: {
     playing: 'playing',
@@ -330,9 +332,7 @@ Vue.component('player', {
                 self = this,
                 endpoint,
                 mediaUrl = this.mediaUrl.replace('http://', 'https://');
-            
-            mediaUrl = mediaUrl.replace('http://', 'https://');  ;
-              
+                          
             endpoint = 'https://api.streamable.com/oembed.json'
               + '?url=' + mediaUrl
               + '&maxwidth=' + this.width
@@ -403,75 +403,49 @@ Vue.component('player', {
             break;
             
           case 'imgur.com':
-            // Treat them all like gifvs?
-            // if no extenstion, add .gifv
-            var hasExtension = /\.[^\/]*$/i,
-                mediaUrl = this.mediaUrl,
-                extension,
-                templateType;
+            
+            var xhr = new XMLHttpRequest(),
+                self = this,
+                mediaId = this.mediaUrl.match(/imgur.com\/([a-zA-Z0-9]+)/)[1];
+                mediaUrl,
+                endpoint;
                 
-            mediaUrl = mediaUrl.replace('http://', 'https://');    
-            extension = mediaUrl.match(hasExtension);
-            templateType = 'image';
-            
-            if (extension == null) {
-              mediaUrl += '.gifv';
-              templateType = 'iframe';
-            } else if (extension[0] === '.gifv') {
-              templateType = 'iframe';
+            if (mediaId == null) {
+              break;
             }
+              
+            endpoint = 'https://api.imgur.com/3/image/' + mediaId;
             
-            switch (templateType) {
-              case 'iframe':
-                this.embedHtml = '<iframe allowfullscreen frameborder="0" src="' + mediaUrl
-                  + '" width="' + this.width
-                  + '" height="' + this.height
-                  + '"></iframe>';
-                break;
-              case 'image':
-                this.embedHtml = '<img src="' + mediaUrl + '">';
-                break;
-            }
+            xhr.open('GET', endpoint);
+            xhr.setRequestHeader('Authorization', 'Client-ID ' + app.config.imgurClientId)
+            xhr.onload = function() {
+              var response = JSON.parse(xhr.responseText),
+                  mediaUrl;
+                            
+              if (response.data.mp4 != null) {
+                mediaUrl = response.data.mp4;
             
+                mediaUrl = mediaUrl.replace('http://', 'https://');
+
+                self.embedHtml = '<video '
+                  + 'src="' + mediaUrl + '" '
+                  + 'width="' + self.width + '" '
+                  + 'height="' + self.height + '" '
+                  + 'loop controls autoplay></video';
+              } else {
+                mediaUrl = response.data.link;
+            
+                mediaUrl = mediaUrl.replace('http://', 'https://');
+
+                // all this back and forth seems silly but eh              
+                self.embedHtml = '<img '
+                  + 'src="' + mediaUrl + '" '
+                  + 'width="' + self.width + '" '
+                  + 'height="' + self.height + '">';
+              }
+            };
+            xhr.send();
             break;
-            
-            // var xhr = new XMLHttpRequest(),
-            //     self = this,
-            //     mediaId = this.findImgurId(this.mediaUrl),
-            //     endpoint;
-                
-            // if (mediaId == null) {
-            //   break;
-            // }
-              
-            // endpoint = 'https://api.imgur.com/3/image/' + mediaId;
-            
-            // xhr.open('GET', endpoint);
-            // xhr.onload = function() {
-            //   var response = JSON.parse(xhr.responseText);
-            //   var mediaType = response.data.type;
-              
-            //   switch (mediaType) {
-            //     case 'image/gif':
-            //     case 'image/gif':
-            //       // code
-            //       break;
-            //   }
-              
-            //   if (response.html == null) {
-            //     console.log('uh oh');
-            //   }
-              
-            //   // all this back and forth seems silly but eh
-            //   var responseDoc = domParser.parseFromString(response.html, 'text/html');
-            //   var iframeHtml = responseDoc.getElementsByTagName('iframe')[0];
-            //   iframeHtml.setAttribute('width', self.width);
-            //   iframeHtml.setAttribute('height', self.height);
-              
-            //   self.embedHtml = iframeHtml.parentNode.innerHTML;
-            // };
-            // xhr.send();
-            // break;
           
             
           default:
