@@ -41,6 +41,7 @@
             v-for="(upcomingPost, index) in posts"
             v-bind:active="upcomingPost.active"
             v-bind:nsfw="upcomingPost.data.over_18"
+            v-bind:spoiler="upcomingPost.data.spoiler"
             v-bind:title="upcomingPost.data.title"
             v-bind:thumbnail="upcomingPost.data.thumbnail"
             v-on:click.native="emitLoadPost(index)">
@@ -60,7 +61,7 @@
     <script type="text/x-template" id="upcoming-post-template">
       <li 
         class="upcoming-post flex-container"
-        v-bind:class="{ 'upcoming-post_active': active, 'upcoming-post_nsfw': nsfw }">
+        v-bind:class="{ 'upcoming-post_active': active, 'upcoming-post_nsfw': nsfw, 'upcoming-post_spoiler': spoiler }">
         <div class="column">
           <span class="upcoming-post__title">{{ title }}</span>
         </div>
@@ -220,7 +221,7 @@
       <ul class="menu">
         <li>
           <a href="https://gomix.com/#!/project/smcer">
-            Remix this in Glitch
+            <img width="200" src="https://cdn.gomix.com/2bdfb3f8-05ef-4035-a06e-2043962a3a13%2Fremix-button.svg" alt="Remix on Glitch">
           </a>
         </li>
         <li>

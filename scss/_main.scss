@@ -201,7 +201,8 @@ header {
     background: $dark-gray;
   }
   
-  &_nsfw {
+  &_nsfw,
+  &_spoiler {
   
     .upcoming-post__thumbnail {
       position: relative;
@@ -220,6 +221,24 @@ header {
       
       img {
         opacity: 0.2;
+      }
+    }
+  }
+  
+  &_spoiler {
+  
+    .upcoming-post__thumbnail {
+      
+      &::before {
+        content: 'SPOILER';
+        color: $warning-color;
+        font-size: 220%;
+        font-weight: bold;
+        position: absolute;
+        bottom: 1.6rem;
+        right: -1.7rem;
+        -webkit-transform: rotate(27deg);
+        transform: rotate(27deg);
       }
     }
   }

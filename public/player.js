@@ -5,6 +5,7 @@
 var app = {
   config: {
     nsfwThumbnailUrl: 'https://cdn.glitch.com/630c7520-5581-4686-ba26-06f0aa5f7e5f%2Fnsfw-thumbnail.png',
+    spoilerThumbnailUrl: 'https://cdn.glitch.com/630c7520-5581-4686-ba26-06f0aa5f7e5f%2Fnsfw-thumbnail.png',
     // Dont' worry man it's supposed to be public
     imgurClientId: '2ac6a4219c940db'
   },
@@ -48,6 +49,7 @@ Vue.component('playlist', {
       props: {
         active: Boolean,
         nsfw: Boolean,
+        spoiler: Boolean,
         title: String,
         thumbnail: String
       },
@@ -58,6 +60,8 @@ Vue.component('playlist', {
           switch (url) {
             case 'nsfw':
               return app.config.nsfwThumbnailUrl;
+            case 'spoiler':
+              return app.config.spoilerThumbnailUrl;
             
             default:
               return url;
@@ -645,6 +649,7 @@ var vm = new Vue({
       var self = this;
       
       xhr.open('GET', this.endpoint);
+      xhr.setRequestHeader('User-Agent', 'web:super-media-collider-extravaganza-for-reddit:v0.9.0 (by /u/redriderx)');
       xhr.onload = function() {
         var response = JSON.parse(xhr.responseText).data;
         response = self.prepareData(response);
