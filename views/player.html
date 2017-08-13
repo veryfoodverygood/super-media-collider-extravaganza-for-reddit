@@ -22,7 +22,7 @@
           v-bind:domain="mediaType"
           v-bind:width="width"
           v-bind:height="height"
-          v-bind:mediaUrl="post.url"
+          v-bind:mediaUrl="mediaUrl"
           v-bind:playerStatus="post.mediaStatus"
           v-bind:backupEmbedHtml="embedCode"
           v-on:media-finished="playNext"
@@ -31,6 +31,16 @@
         </component>
         </div>
       </section>
+    </script>
+    
+    <script type="text/x-template" id="video-embed-template">
+      <div class="embed-wrapper">
+        <div class="video-wrapper" v-bind:style="{width: width + 'px', height: height + 'px'}">
+          <video controls autoplay name="media">
+            <source v-bind:src="mediaUrl" type="video/mp4">
+          </video>
+        </div>
+      </div>
     </script>
     
     <script type="text/x-template" id="playlist-template">
@@ -231,7 +241,7 @@
     </footer>
 
     <!-- https only plz -->
-    <script src="https://unpkg.com/vue@2.1.7/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.7/vue.js"></script>
     <script src="https://code.jquery.com/jquery-2.2.1.min.js"
             integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
             crossorigin="anonymous"></script>

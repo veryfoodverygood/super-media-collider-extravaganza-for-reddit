@@ -133,6 +133,16 @@ Vue.component('player', {
       }
     },
     
+    mediaUrl: function() {
+      switch (this.post.post_hint) {
+        case 'hosted:video':
+          return this.post.media.reddit_video.fallback_url;
+        
+        default:
+          return this.post.url;
+      }
+    },
+    
     currentView: function() {
       switch (this.post.domain) {
         case 'youtube.com':
@@ -147,6 +157,9 @@ Vue.component('player', {
         
         case 'i.redd.it':
           return 'image-embed';
+          
+        case 'v.redd.it':
+          return 'video-embed';
         
         default:
           return 'generic-embed';
@@ -319,6 +332,14 @@ Vue.component('player', {
       
       props: {
         backupEmbedHtml: String,
+        mediaUrl: String,
+        width: Number,
+        height: Number
+      }
+    },
+    'video-embed': {
+      template: '#video-embed-template',
+      props: {
         mediaUrl: String,
         width: Number,
         height: Number
@@ -576,7 +597,8 @@ var vm = new Vue({
     allowedPostHints: [
       'link',
       'image',
-      'rich:video'
+      'rich:video',
+      'hosted:video'
     ],
     postMeta: {
       after: null,
@@ -649,7 +671,7 @@ var vm = new Vue({
       var self = this;
       
       xhr.open('GET', this.endpoint);
-      xhr.setRequestHeader('User-Agent', 'web:super-media-collider-extravaganza-for-reddit:v0.9.0 (by /u/redriderx)');
+      // xhr.setRequestHeader('User-Agent', 'web:super-media-collider-extravaganza-for-reddit:v0.9.0 (by /u/redriderx)');
       xhr.onload = function() {
         var response = JSON.parse(xhr.responseText).data;
         response = self.prepareData(response);
