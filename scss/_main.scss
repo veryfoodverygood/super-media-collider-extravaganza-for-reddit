@@ -15,6 +15,14 @@ body {
       
       h1 {
         font-family: $brand-font-family;
+        
+        @include breakpoint(large) {
+          font-size: 5rem;
+          margin: 1rem;
+          transform: skew(27deg);
+          max-width: 100rem;
+          margin: 1rem auto;
+        }
       }
     }
     
@@ -30,9 +38,15 @@ body {
 }
 
 .mood {
+  border: none;
+  
+  &__header {
+    background: #1f1f1f;
+  }
+  
   &_video {
     .e1a-film_frames {
-      filter: #{'invert()'};
+      filter: #{'invert(100%)'};
     }
   }
 }

@@ -53,6 +53,14 @@ var moods = new Vue({
           {
             title: 'Listen To This',
             url: '/r/listentothis'
+          },
+          {
+            title: 'Electronic',
+            url: '/r/electronicmusic'
+          },
+          {
+            title: 'Classical',
+            url: '/r/classicalmusic'
           }
         ] 
       },
