@@ -1,4 +1,5 @@
-# Super Media Collider Extranaganza for Reddit!
+# WYARP - Why Yet Another Reddit Player of
+## Super Media Collider Extranaganza for Reddit!
 
 ---
 
